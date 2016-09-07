@@ -27,7 +27,7 @@ export default function (sequelize, DataTypes) {
 		},
 		joinStatus: {
 			type: DataTypes.ENUM,
-			values: ['applying', 'following', 'joined','rejected','cancelled'],
+			values: ['applying', 'following', 'joined', 'rejected', 'cancelled'],
 			defaultValue: 'joined'
 		},
 		active: DataTypes.BOOLEAN
@@ -61,20 +61,24 @@ export default function (sequelize, DataTypes) {
 							} else {
 								if (ur.spaceId) {
 									//console.log('6 theParams',JSON.stringify(theParams));
-									var roleName;
-									if (ur.role) {
+									var roleName, roleAlias;
+									var roleData;
+									if (ur.role && typeof ur.role === 'string') {
 										roleName = ur.role;
+									}
+									if (ur.role && typeof ur.role === 'object') {
+										roleName = ur.role.name;
+										roleAlias = ur.role.alias;
 									}
 									if (ur.roleName) {
 										roleName = ur.roleName;
 									}
 									if (roleName) {
 										//console.log('7 theParams',JSON.stringify(theParams));
-										return Role.find({
-											where: {
-												fullname: 'root.' + roleName,
-												spaceId: ur.spaceId
-											}
+										return Role.add({
+											name: roleName,
+											alias: roleAlias || roleName,
+											spaceId: ur.spaceId
 										}).then(function (role) {
 											//console.log('5 role',JSON.stringify(role));
 											ur.roleId = role._id;
@@ -108,6 +112,17 @@ export default function (sequelize, DataTypes) {
 							//return that.bulkCreate(theParams);
 						});
 					}
+				},
+				add: function (data) {
+					var params = [];
+					params.push(data);
+					return this.batchAdd(params).then(function (results) {
+						if (_.isArray(results)) {
+							return Promise.resolve(results[0]);
+						} else {
+							return Promise.reject('fail to add user role');
+						}
+					})
 				}
 
 			}

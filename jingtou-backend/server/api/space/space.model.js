@@ -249,6 +249,28 @@ export default function (sequelize, DataTypes) {
 						return Promise.reject('fail to add role!');
 					}
 
+				},
+
+				addUserSpace: function(user){
+					var spaceData = {};
+					var newSpace;
+					if(typeof user === 'object'){
+						var alias = user.name || user.loginId;
+						spaceData.name = 'mySpace@@'+user.loginId;
+						spaceData.alias = 'mySpace '+ alias;
+						spaceData.type = 'personal.normal';
+						return this.add(spaceData).then(function(space){
+							//add user into admin of space
+							newSpace = space;
+							return UserRole.add({
+								userId: user._id,
+								role: 'admin',
+								spaceId: space._id
+							});
+						}).then(function(){
+							return newSpace;
+						})
+					}
 				}
 			},
 			instanceMethods: {

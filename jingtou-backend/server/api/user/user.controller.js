@@ -106,6 +106,9 @@ export function create(req, res, next) {
   newUser.setDataValue('role', 'user');
   newUser.save()
     .then(function (user) {
+      newUser = user;
+      return Space.addUserSpace(user);
+    }).then(function () {
       var token = jwt.sign({ _id: user._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5
       });
@@ -371,17 +374,17 @@ export function findOneUserGroup(req, res) {
     .catch(handleError(res));
 }
 
-export function addUserGroupRole(req, res){
+export function addUserGroupRole(req, res) {
 
   return UserGroup.addRole(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
 
-export function findAllUserGroupRole(req, res){
-   return UserGroup.findAllRole(req.query).then(function(results){
-     return Promise.resolve(results);
-   })
+export function findAllUserGroupRole(req, res) {
+  return UserGroup.findAllRole(req.query).then(function (results) {
+    return Promise.resolve(results);
+  })
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }

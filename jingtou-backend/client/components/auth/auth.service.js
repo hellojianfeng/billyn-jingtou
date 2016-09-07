@@ -89,7 +89,29 @@
 
           return user;
 
-        }).then(function (newUser) {
+        })
+        .then(user => {
+            //set current user
+            $rootScope.current.user = user;
+            return BSpace.getUserSpaces({
+              userId: user._id,
+              type: 'space.person.normal'
+            }).then(spaces => {
+              //set current space
+              $rootScope.current.space = spaces[0];
+              return BApp.find({
+                name: 'appEngine',
+                spaceId: $rootScope.current.space._id
+              }).then(app => {
+                //set current app
+                $rootScope.current.app = app;
+                return $q.when(app);
+              });
+            }).then(function () {
+              return $q.when(user);
+            });
+          })
+        /*.then(function (newUser) {
           $rootScope.current.user = newUser;
           var tName = newUser.name;
           if (newUser.name) {
@@ -111,7 +133,7 @@
           }).then(function () {
             return newUser;
           });
-        }).then(user => {
+        })*/.then(user => {
           safeCb(callback)(null, user);
           return user;
         })
