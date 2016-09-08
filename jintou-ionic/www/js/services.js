@@ -1,6 +1,6 @@
 var appServices = angular.module('starter.services', []);// Use for all service of application.
 
-appServices.factory('resApi',api);
+appServices.factory('blnApi',api);
 
 /** @ngInject */
 function api($resource) {

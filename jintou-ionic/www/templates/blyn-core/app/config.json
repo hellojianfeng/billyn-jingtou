@@ -1,0 +1,75 @@
+{
+	"type": "nut.core",
+	"nutPermits": {
+		"appStore": {
+			"alias": "App store"
+		},
+        "adminSpace": {
+            "alias": "Admin space"
+        }
+	},
+	"apps": {
+		"appEngine": {
+			"alias": "App engine",
+			"type": "app.core",
+			"cores": {
+				"role": {
+					"grants": {
+						"admin": "adminSpaceRole,adminUserRole",
+						"everyone": "myRole"					
+					}
+				},
+				"space": {
+					"grants": {
+						"admin": "adminSpace, appStore"
+					}
+				},
+				"circle": {
+					"grants": {
+						"admin": "adminCircle",
+						"manager":"manageCircle",
+						"everyone": "circleMember"				
+					}
+				}
+			}
+		},
+		"personApp": {
+			"alias": "User App",
+			"type": "app.core",
+			"cores": {
+				"user": {
+					"grants": {
+						"admin": "myAccount"
+					}
+				}
+			}
+		},
+		"weMember": {
+			"alias": "微会员",
+			"type": "app.normal",
+			"nuts": {
+				"voucher": {
+					"grants": {
+						"admin": "adminVoucher",
+						"member": "manageVoucher",
+						"customer": "useVoucher"
+					}
+				},
+				"point": {
+					"grants": {
+						"admin": "adminPoint",
+						"member": "managePoint",
+						"customer": "pointCustomer"
+					}
+				},
+				"card": {
+					"grants": {
+						"admin": "adminCard",
+						"member": "manageCard",
+						"customer": "cardCustomer"
+					}
+				}
+			}
+		}
+	}
+}

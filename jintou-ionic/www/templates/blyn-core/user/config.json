@@ -1,0 +1,8 @@
+{
+	"nutType": "nut.core",
+	"nutPermits": {
+		"myAccount": {
+			"alias": "my account"
+		}
+	}
+}

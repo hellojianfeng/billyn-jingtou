@@ -1,0 +1,92 @@
+{
+	"type": {
+        "type": "nut.core"
+    },
+	"nutPermits": {
+		"spaceAdmin": {
+			"alias": "space admin"
+		},
+		"spaceManager": {
+			"alias": "space member"
+		},
+		"spaceCustomer": {
+			"alias": "space customer"
+		}
+	},
+	"joinSpacePermits": {
+		"allow.apply": {
+			"name": "allow.apply"
+		},
+		"allow.join": {
+			"name": "allow.join"
+		},
+		"allow.approve.auto": {
+			"name": "allow.approve.auto"
+		}
+	},
+	"types": {
+        "person": {
+			"name": "normal",
+			"alias": "个人空间",
+			"description": "个人空间",
+			"roles": [
+				{
+					"name": "admin"
+				},
+				{
+					"name": "public",
+					"grants": {
+						"member": "allow.apply"
+					}
+				}
+			],
+			"apps": [
+				"personApp"
+			]
+		},
+		"normal": {
+			"name": "normal",
+			"alias": "普通机构",
+			"description": "普通机构",
+			"roles": [
+				{
+					"name": "admin"
+				},
+				{
+					"name": "member"
+				},
+				{
+					"name": "public",
+					"grants": {
+						"member": "allow.apply"
+					}
+				}
+			],
+			"apps": [
+				
+			]
+		},
+        "normal.member": {
+			"name": "normal.member",
+			"alias": "会员应用",
+			"description": "普通机构",
+			"roles": [
+				{
+					"name": "admin"
+				},
+				{
+					"name": "member"
+				},
+				{
+					"name": "public",
+					"grants": {
+						"member": "allow.apply"
+					}
+				}
+			],
+			"apps": [
+				"weMember"
+			]
+		}
+	}
+}
