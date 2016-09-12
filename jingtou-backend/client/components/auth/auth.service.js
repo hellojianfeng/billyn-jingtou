@@ -41,7 +41,7 @@
             $rootScope.current.user = user;
             return BSpace.getUserSpaces({
               userId: user._id,
-              type: 'space.person.normal'
+              //type: 'space.person.normal'
             }).then(spaces => {
               //set current space
               $rootScope.current.space = spaces[0];

@@ -104,12 +104,12 @@ export function create(req, res, next) {
   var newUser = User.build(req.body);
   newUser.setDataValue('provider', 'local');
   newUser.setDataValue('role', 'user');
-  newUser.save()
+  return newUser.save()
     .then(function (user) {
       newUser = user;
       return Space.addUserSpace(user);
     }).then(function () {
-      var token = jwt.sign({ _id: user._id }, config.secrets.session, {
+      var token = jwt.sign({ _id: newUser._id }, config.secrets.session, {
         expiresIn: 60 * 60 * 5
       });
       res.json({ token });

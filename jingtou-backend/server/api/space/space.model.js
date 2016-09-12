@@ -104,11 +104,11 @@ export default function (sequelize, DataTypes) {
 							typeId = spaceData.typeId;
 							return resolve(spaceData.typeId);
 						} else if (spaceData.type) {
-							if(spaceData.type.roles){
+							if (spaceData.type.roles) {
 								spaceData.roles = spaceData.type.roles;
 								delete spaceData.type.roles;
 							}
-							if(spaceData.type.apps){
+							if (spaceData.type.apps) {
 								spaceData.apps = spaceData.type.apps;
 								delete spaceData.type.roles;
 							}
@@ -135,12 +135,12 @@ export default function (sequelize, DataTypes) {
 							var hasMember = false;
 							//var hasCustomer = false;
 							var hasPublic = false;
-							spaceData.roles.forEach(function(role){
-								if(role.name === 'admin'){
+							spaceData.roles.forEach(function (role) {
+								if (role.name === 'admin') {
 									role.allowDelete = false;
 									hasAdmin = true;
 								}
-								if(role.name === 'member'){
+								if (role.name === 'member') {
 									role.allowDelete = false;
 									hasMember = true;
 								}
@@ -149,13 +149,13 @@ export default function (sequelize, DataTypes) {
 									role.allowDelete = false;
 									hasCustomer = true;
 								}*/
-								if(role.name === 'public'){
+								if (role.name === 'public') {
 									role.allowDelete = false;
 									hasPublic = true;
 								}
 							})
 
-							if(!hasAdmin){
+							if (!hasAdmin) {
 								spaceData.roles.push(
 									{
 										name: "admin",
@@ -164,7 +164,7 @@ export default function (sequelize, DataTypes) {
 								)
 							}
 
-							if(!hasMember){
+							if (!hasMember) {
 								spaceData.roles.push(
 									{
 										name: "member",
@@ -181,7 +181,7 @@ export default function (sequelize, DataTypes) {
 									}
 								)
 							}*/
-							if(!hasPublic){
+							if (!hasPublic) {
 								spaceData.roles.push(
 									{
 										name: "public",
@@ -206,7 +206,7 @@ export default function (sequelize, DataTypes) {
 									model: Role, as: 'roles'
 								}
 							]
-						}).then(function(space){
+						}).then(function (space) {
 							//console.log('space:',JSON.stringify(space));
 							return Promise.resolve(space);
 						})
@@ -229,8 +229,8 @@ export default function (sequelize, DataTypes) {
 				addRole: function (roleData, spaceId) {
 
 					var Role = sqldb.Role;
-					
-					if(typeof roleData === 'string'){
+
+					if (typeof roleData === 'string') {
 						roleData = {
 							name: roleData
 						}
@@ -251,15 +251,16 @@ export default function (sequelize, DataTypes) {
 
 				},
 
-				addUserSpace: function(user){
+				addUserSpace: function (user) {
 					var spaceData = {};
 					var newSpace;
-					if(typeof user === 'object'){
-						var alias = user.name || user.loginId;
-						spaceData.name = 'mySpace@@'+user.loginId;
-						spaceData.alias = 'mySpace '+ alias;
-						spaceData.type = 'personal.normal';
-						return this.add(spaceData).then(function(space){
+					var UserRole = sqldb.UserRole;
+					if (typeof user === 'object') {
+						var alias = user.alias || user.name || user.loginId;
+						spaceData.name = 'mySpace@@' + user.loginId;
+						spaceData.alias = 'mySpace ' + alias;
+						spaceData.type = 'personal';
+						return this.add(spaceData).then(function (space) {
 							//add user into admin of space
 							newSpace = space;
 							return UserRole.add({
@@ -267,9 +268,73 @@ export default function (sequelize, DataTypes) {
 								role: 'admin',
 								spaceId: space._id
 							});
-						}).then(function(){
-							return newSpace;
 						})
+							.then(function () {
+								//add appEngine for user space
+								return App.add(
+									{
+										"name":"appEngine",
+										"alias": "appEngine",
+										"type": "app.core",
+										"cores": {
+											"role": {
+												"grants": {
+													"admin": "adminSpaceRole|管理机构角色,adminUserRole|管理用户角色",
+													"everyone": "myRole|我的角色"
+												}
+											},
+											"space": {
+												"grants": {
+													"admin": [
+														{
+															"name": "adminSpace",
+															"alias": "机构设置"
+														},
+														{
+															"name": "appStore",
+															"alias": "应用商店"
+														}
+													]
+												}
+											},
+											"collab": {
+												"grants": {
+													"admin": ["adminCollab|设置协作"],
+													"manager": ["manageCollab|管理协作"],
+													"everyone": "collabNuts|协作功能"
+												}
+											},
+											"circle": {
+												"grants": {
+													"admin": ["adminCircle|设置机构圈"],
+													"manager": ["manageCircle|管理机构圈"],
+													"everyone": ["circleMember|机构圈主页"]
+												}
+											}
+										}
+									}
+								);
+							})
+							.then(function () {
+								//add personApp for user space
+								return App.add(
+									{
+										"name":"personApp",
+										"alias": "Person App",
+										"type": "app.core",
+										"cores": {
+											"user": {
+												"grants": {
+													"admin": "adminUser, myProfile"
+												}
+											}
+										}
+									}
+								);
+							})
+							.then(function () {
+								return newSpace;
+							})
 					}
 				}
 			},
