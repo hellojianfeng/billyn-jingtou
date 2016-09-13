@@ -258,8 +258,8 @@ export default function (sequelize, DataTypes) {
 					var App = sqldb.App;
 					if (typeof user === 'object') {
 						var alias = user.alias || user.name || user.loginId;
-						spaceData.name = 'mySpace@@' + user.loginId;
-						spaceData.alias = 'mySpace ' + alias;
+						spaceData.name = 'mySpace_of_' + user.loginId;
+						spaceData.alias = 'mySpace(' + alias +')';
 						spaceData.type = 'personal';
 						return this.add(spaceData).then(function (space) {
 							//add user into admin of space
