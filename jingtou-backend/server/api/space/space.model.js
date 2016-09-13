@@ -255,6 +255,7 @@ export default function (sequelize, DataTypes) {
 					var spaceData = {};
 					var newSpace;
 					var UserRole = sqldb.UserRole;
+					var App = sqldb.App;
 					if (typeof user === 'object') {
 						var alias = user.alias || user.name || user.loginId;
 						spaceData.name = 'mySpace@@' + user.loginId;
@@ -312,7 +313,7 @@ export default function (sequelize, DataTypes) {
 												}
 											}
 										}
-									}
+									},newSpace._id
 								);
 							})
 							.then(function () {
@@ -329,7 +330,7 @@ export default function (sequelize, DataTypes) {
 												}
 											}
 										}
-									}
+									},newSpace._id
 								);
 							})
 							.then(function () {
