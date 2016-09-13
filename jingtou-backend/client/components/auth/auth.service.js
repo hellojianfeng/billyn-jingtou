@@ -95,14 +95,11 @@
             $rootScope.current.user = user;
             return BSpace.getUserSpaces({
               userId: user._id,
-              type: 'space.person.normal'
+              type: 'space.personal'
             }).then(spaces => {
               //set current space
               $rootScope.current.space = spaces[0];
-              return BApp.find({
-                name: 'appEngine',
-                spaceId: $rootScope.current.space._id
-              }).then(app => {
+              return BApp.find('appEngine').then(app => {
                 //set current app
                 $rootScope.current.app = app;
                 return $q.when(app);
